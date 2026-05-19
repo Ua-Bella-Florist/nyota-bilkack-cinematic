@@ -40,7 +40,7 @@ export function Chapter({
           width={imageW}
           height={imageH}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover animate-ken-burns"
         />
         <div className="absolute inset-0 bg-burgundy-deep/65" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-ivory">
