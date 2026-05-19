@@ -57,6 +57,10 @@
 
   --animate-bounce-soft: bounce-soft 1.6s ease-in-out infinite;
   --animate-fade-up: fade-up 1s ease-out forwards;
+  --animate-ken-burns: ken-burns 18s ease-in-out infinite alternate;
+  --animate-float-soft: float-soft 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s ease-in-out infinite;
+  --animate-draw-line: draw-line 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes bounce-soft {
