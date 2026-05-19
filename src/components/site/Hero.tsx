@@ -53,7 +53,7 @@ export function Hero() {
 
         <h1 className="mt-8 font-display text-ivory leading-none animate-[fade-up_1.4s_ease-out_0.6s_both]">
           <span className="block text-[clamp(3.5rem,11vw,9rem)]">Nyota</span>
-          <span className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold">
+          <span className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold animate-float-soft">
             &amp;
           </span>
           <span className="block text-[clamp(3.5rem,11vw,9rem)]">Bilkack</span>

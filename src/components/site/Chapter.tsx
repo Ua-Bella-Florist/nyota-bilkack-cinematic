@@ -40,7 +40,7 @@ export function Chapter({
           width={imageW}
           height={imageH}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover animate-ken-burns"
         />
         <div className="absolute inset-0 bg-burgundy-deep/65" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-ivory">
@@ -78,14 +78,14 @@ export function Chapter({
     <section id={id} className={`relative ${bg} ${textColor} py-28 md:py-36`}>
       <div className="mx-auto grid max-w-[1280px] gap-14 px-6 md:grid-cols-12 md:gap-20 md:px-12">
         <div className={`md:col-span-7 ${orderImg}`}>
-          <Reveal className="relative overflow-hidden">
+          <Reveal className="relative overflow-hidden group">
             <img
               src={image}
               alt={imageAlt}
               width={imageW}
               height={imageH}
               loading="lazy"
-              className="h-auto w-full object-cover transition-transform duration-[1500ms] hover:scale-[1.02]"
+              className="h-auto w-full object-cover animate-ken-burns transition-transform duration-[1500ms] group-hover:scale-[1.1]"
             />
           </Reveal>
         </div>

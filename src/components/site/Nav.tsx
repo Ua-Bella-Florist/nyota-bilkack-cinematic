@@ -12,9 +12,15 @@ const LINKS = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 80);
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(h > 0 ? Math.min(100, (y / h) * 100) : 0);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -62,6 +68,7 @@ export function Nav() {
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
+      <div className="absolute bottom-0 left-0 h-px bg-gold/70 transition-[width] duration-150" style={{ width: `${progress}%` }} />
 
       {open && (
         <div className="md:hidden fixed inset-0 top-[60px] bg-burgundy-deep/98 backdrop-blur-xl">
