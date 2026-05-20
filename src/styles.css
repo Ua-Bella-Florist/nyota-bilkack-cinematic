@@ -198,3 +198,14 @@
   }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+.gallery-scroll::-webkit-scrollbar { width: 6px; }
+.gallery-scroll::-webkit-scrollbar-track { background: transparent; }
+.gallery-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--gold) 50%, transparent);
+  border-radius: 999px;
+}
+.gallery-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+.gallery-scroll { scrollbar-width: thin; scrollbar-color: var(--gold) transparent; }
