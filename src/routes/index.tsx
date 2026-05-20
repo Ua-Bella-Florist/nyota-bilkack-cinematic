@@ -19,16 +19,44 @@ import families from "@/assets/families.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nyota & Bilkack — 16 May 2026" },
+      { title: "The Wedding of Nyota & Bilkack — 16 May 2026" },
       {
         name: "description",
         content:
-          "A cinematic memorial of Nyota and Bilkack's wedding day — every love story is beautiful, but ours is my favourite.",
+          "A cinematic memorial of Nyota and Bilkack's wedding day at Vosh — every love story is beautiful, but ours is my favourite.",
       },
-      { property: "og:title", content: "Nyota & Bilkack — 16 May 2026" },
+      { property: "og:title", content: "The Wedding of Nyota & Bilkack — 16 May 2026" },
       {
         property: "og:description",
-        content: "A cinematic memorial of the wedding day.",
+        content:
+          "A cinematic memorial of Nyota and Bilkack's wedding day at Vosh — every love story is beautiful, but ours is my favourite.",
+      },
+      { name: "twitter:title", content: "The Wedding of Nyota & Bilkack — 16 May 2026" },
+      {
+        name: "twitter:description",
+        content:
+          "A cinematic memorial of Nyota and Bilkack's wedding day at Vosh.",
+      },
+    ],
+    links: [
+      { rel: "canonical", href: "https://nyota-bilkack-cinematic.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WeddingEvent",
+          name: "Nyota & Bilkack's Wedding",
+          startDate: "2026-05-16",
+          eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          eventStatus: "https://schema.org/EventScheduled",
+          location: {
+            "@type": "Place",
+            name: "Vosh · Ministry of Repentance and Holiness",
+          },
+          url: "https://nyota-bilkack-cinematic.lovable.app/",
+        }),
       },
     ],
   }),

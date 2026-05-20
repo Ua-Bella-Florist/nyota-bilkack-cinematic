@@ -52,11 +52,12 @@ export function Hero() {
         </p>
 
         <h1 className="mt-8 font-display text-ivory leading-none animate-[fade-up_1.4s_ease-out_0.6s_both]">
-          <span className="block text-[clamp(3.5rem,11vw,9rem)]">Nyota</span>
-          <span className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold animate-float-soft">
+          <span className="sr-only">The Wedding of Nyota &amp; Bilkack</span>
+          <span aria-hidden="true" className="block text-[clamp(3.5rem,11vw,9rem)]">Nyota</span>
+          <span aria-hidden="true" className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold animate-float-soft">
             &amp;
           </span>
-          <span className="block text-[clamp(3.5rem,11vw,9rem)]">Bilkack</span>
+          <span aria-hidden="true" className="block text-[clamp(3.5rem,11vw,9rem)]">Bilkack</span>
         </h1>
 
         <p className="mt-10 max-w-md font-serif italic text-base sm:text-lg text-ivory/85 animate-[fade-up_1.4s_ease-out_1.1s_both]">

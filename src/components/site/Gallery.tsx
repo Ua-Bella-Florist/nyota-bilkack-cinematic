@@ -19,7 +19,7 @@ const items: { src: string; tag: Exclude<Tag, "All">; alt: string; aspect: strin
   { src: reception, tag: "Reception", alt: "Reception room", aspect: "aspect-[4/3]" },
   { src: gifts, tag: "Reception", alt: "Wedding gifts", aspect: "aspect-square" },
   { src: bridal, tag: "Reception", alt: "Bridal party", aspect: "aspect-[4/3]" },
-  { src: party, tag: "Party", alt: "Dancing", aspect: "aspect-[3/4]" },
+  { src: party, tag: "Party", alt: "Guests dancing at the reception", aspect: "aspect-[3/4]" },
   { src: families, tag: "Families", alt: "Family portrait", aspect: "aspect-[4/3]" },
 ];
 
@@ -60,6 +60,7 @@ export function Gallery() {
             <Reveal key={`${active}-${i}`} delay={i * 40} className="mb-4 break-inside-avoid">
               <button
                 onClick={() => setLightbox(it.src)}
+                aria-label={`Open photo: ${it.alt}`}
                 className={`group relative block w-full overflow-hidden ${it.aspect}`}
               >
                 <img
@@ -86,6 +87,7 @@ export function Gallery() {
             className="max-h-[90vh] max-w-[95vw] object-contain shadow-dark"
           />
           <button
+            aria-label="Close photo viewer"
             className="absolute top-6 right-6 text-ivory/70 hover:text-gold text-[11px] tracking-[0.3em] uppercase"
             onClick={() => setLightbox(null)}
           >
