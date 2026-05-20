@@ -25,7 +25,8 @@ const baseItems: { src: string; tag: Exclude<Tag, "All">; alt: string; aspect: s
 ];
 
 // Duplicate to simulate a denser archive so the internal scroll is meaningful
-const items = [...baseItems, ...baseItems, ...baseItems];
+const items = [...baseItems, ...baseItems, ...baseItems, ...baseItems, ...baseItems];
+const PAGE_SIZE = 12;
 
 const tags: Tag[] = ["All", "Getting Ready", "Ceremony", "Reception", "Party", "Families"];
 const layouts: Layout[] = ["Masonry", "Grid", "Strip"];
