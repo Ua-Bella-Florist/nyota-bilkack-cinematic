@@ -79,6 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/38142a4b-0eb7-46f5-ad57-14a26863326b/id-preview-fb01ab01--d50c49ce-4ca2-4547-8987-d799b77b2566.lovable.app-1779204101084.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/38142a4b-0eb7-46f5-ad57-14a26863326b/id-preview-fb01ab01--d50c49ce-4ca2-4547-8987-d799b77b2566.lovable.app-1779204101084.png" },
+      { title: "Lovable App" },
+      { property: "og:title", content: "Lovable App" },
+      { name: "twitter:title", content: "Lovable App" },
+      { name: "description", content: "A cinematic wedding memorial website that tells an emotional story through immersive visuals and elegant design." },
+      { property: "og:description", content: "A cinematic wedding memorial website that tells an emotional story through immersive visuals and elegant design." },
+      { name: "twitter:description", content: "A cinematic wedding memorial website that tells an emotional story through immersive visuals and elegant design." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
