@@ -119,11 +119,12 @@ export function Gallery() {
         </div>
 
         <div
+          ref={scrollRef}
           className="mt-10 max-h-[78vh] overflow-y-auto pr-2 gallery-scroll"
           style={{ scrollbarGutter: "stable" }}
         >
           <div className={containerClass}>
-            {filtered.map((it, i) => {
+            {visible.map((it, i) => {
               const itemClass =
                 layout === "Masonry"
                   ? `mb-4 break-inside-avoid ${it.aspect}`
@@ -134,7 +135,7 @@ export function Gallery() {
               return (
                 <Reveal
                   key={`${active}-${layout}-${i}`}
-                  delay={Math.min(i * 30, 400)}
+                  delay={Math.min((i % PAGE_SIZE) * 30, 400)}
                   className={itemClass}
                 >
                   <button
@@ -146,6 +147,7 @@ export function Gallery() {
                       src={it.src}
                       alt={it.alt}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
                     />
                     <div className="absolute inset-0 bg-burgundy-deep/0 group-hover:bg-burgundy-deep/30 transition-colors duration-500" />
@@ -154,6 +156,20 @@ export function Gallery() {
               );
             })}
           </div>
+
+          {visibleCount < filtered.length && (
+            <div
+              ref={sentinelRef}
+              className="flex items-center justify-center py-10 text-[10px] tracking-[0.3em] uppercase text-charcoal/40"
+            >
+              Loading more memories…
+            </div>
+          )}
+          {visibleCount >= filtered.length && filtered.length > PAGE_SIZE && (
+            <div className="py-10 text-center text-[10px] tracking-[0.3em] uppercase text-charcoal/30">
+              End of archive · {filtered.length} frames
+            </div>
+          )}
         </div>
       </div>
 
