@@ -45,28 +45,41 @@ export function Hero() {
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
         <p
-          className="label-gold animate-[fade-up_1.2s_ease-out_0.3s_both]"
+          className="label-gold animate-[fade-up_2s_ease-out_0.6s_both]"
           style={{ color: "var(--gold)" }}
         >
           16 · 05 · 2026
         </p>
 
-        <h1 className="mt-8 font-display text-ivory leading-none animate-[fade-up_1.4s_ease-out_0.6s_both]">
+        <h1 className="mt-8 font-display text-ivory leading-none">
           <span className="sr-only">The Wedding of Nyota &amp; Bilkack</span>
-          <span aria-hidden="true" className="block text-[clamp(3.5rem,11vw,9rem)]">Nyota</span>
-          <span aria-hidden="true" className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold animate-float-soft">
+          <span
+            aria-hidden="true"
+            className="block text-[clamp(3.5rem,11vw,9rem)] animate-[fade-up_2.2s_ease-out_1.2s_both]"
+          >
+            Nyota
+          </span>
+          <span
+            aria-hidden="true"
+            className="my-2 block text-[clamp(2rem,5vw,3.5rem)] font-serif italic text-gold animate-[fade-up_2.2s_ease-out_2s_both]"
+          >
             &amp;
           </span>
-          <span aria-hidden="true" className="block text-[clamp(3.5rem,11vw,9rem)]">Bilkack</span>
+          <span
+            aria-hidden="true"
+            className="block text-[clamp(3.5rem,11vw,9rem)] animate-[fade-up_2.2s_ease-out_2.6s_both]"
+          >
+            Bilkack
+          </span>
         </h1>
 
-        <p className="mt-10 max-w-md font-serif italic text-base sm:text-lg text-ivory/85 animate-[fade-up_1.4s_ease-out_1.1s_both]">
+        <p className="mt-10 max-w-md font-serif italic text-base sm:text-lg text-ivory/85 animate-[fade-up_2.4s_ease-out_3.6s_both]">
           “Every love story is beautiful, but ours is my favourite.”
         </p>
 
         <a
           href="#story"
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-ivory/70 hover:text-gold transition-colors"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-ivory/70 hover:text-gold transition-colors animate-[fade-up_2s_ease-out_4.6s_both]"
         >
           <span className="text-[10px] tracking-[0.4em] uppercase">Scroll</span>
           <span className="block h-10 w-px bg-current animate-bounce-soft" aria-hidden />
