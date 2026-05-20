@@ -85,7 +85,7 @@ export function Chapter({
               width={imageW}
               height={imageH}
               loading="lazy"
-              className="h-auto w-full object-cover animate-ken-burns transition-transform duration-[1500ms] group-hover:scale-[1.1]"
+              className="h-auto w-full object-cover transition-transform duration-[1500ms] group-hover:scale-[1.05]"
             />
           </Reveal>
         </div>
