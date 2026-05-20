@@ -35,11 +35,41 @@ export function Gallery() {
   const [active, setActive] = useState<Tag>("All");
   const [layout, setLayout] = useState<Layout>("Masonry");
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const filtered = useMemo(
     () => (active === "All" ? items : items.filter((i) => i.tag === active)),
     [active],
   );
+
+  const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+
+  // Reset pagination when filter/layout changes
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [active, layout]);
+
+  // Infinite scroll: observe sentinel inside the scroll container
+  useEffect(() => {
+    const root = scrollRef.current;
+    const target = sentinelRef.current;
+    if (!root || !target) return;
+    if (visibleCount >= filtered.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+        }
+      },
+      { root, rootMargin: "400px 0px" },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [visibleCount, filtered.length, layout]);
 
   const containerClass =
     layout === "Masonry"
