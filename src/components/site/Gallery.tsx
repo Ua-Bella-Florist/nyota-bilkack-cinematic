@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import gettingReady from "@/assets/getting-ready.jpg";
 import ceremony from "@/assets/ceremony.jpg";
 import reception from "@/assets/reception.jpg";
@@ -25,7 +25,8 @@ const baseItems: { src: string; tag: Exclude<Tag, "All">; alt: string; aspect: s
 ];
 
 // Duplicate to simulate a denser archive so the internal scroll is meaningful
-const items = [...baseItems, ...baseItems, ...baseItems];
+const items = [...baseItems, ...baseItems, ...baseItems, ...baseItems, ...baseItems];
+const PAGE_SIZE = 12;
 
 const tags: Tag[] = ["All", "Getting Ready", "Ceremony", "Reception", "Party", "Families"];
 const layouts: Layout[] = ["Masonry", "Grid", "Strip"];
@@ -34,11 +35,41 @@ export function Gallery() {
   const [active, setActive] = useState<Tag>("All");
   const [layout, setLayout] = useState<Layout>("Masonry");
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const filtered = useMemo(
     () => (active === "All" ? items : items.filter((i) => i.tag === active)),
     [active],
   );
+
+  const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+
+  // Reset pagination when filter/layout changes
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [active, layout]);
+
+  // Infinite scroll: observe sentinel inside the scroll container
+  useEffect(() => {
+    const root = scrollRef.current;
+    const target = sentinelRef.current;
+    if (!root || !target) return;
+    if (visibleCount >= filtered.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+        }
+      },
+      { root, rootMargin: "400px 0px" },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [visibleCount, filtered.length, layout]);
 
   const containerClass =
     layout === "Masonry"
@@ -88,11 +119,12 @@ export function Gallery() {
         </div>
 
         <div
+          ref={scrollRef}
           className="mt-10 max-h-[78vh] overflow-y-auto pr-2 gallery-scroll"
           style={{ scrollbarGutter: "stable" }}
         >
           <div className={containerClass}>
-            {filtered.map((it, i) => {
+            {visible.map((it, i) => {
               const itemClass =
                 layout === "Masonry"
                   ? `mb-4 break-inside-avoid ${it.aspect}`
@@ -103,7 +135,7 @@ export function Gallery() {
               return (
                 <Reveal
                   key={`${active}-${layout}-${i}`}
-                  delay={Math.min(i * 30, 400)}
+                  delay={Math.min((i % PAGE_SIZE) * 30, 400)}
                   className={itemClass}
                 >
                   <button
@@ -115,6 +147,7 @@ export function Gallery() {
                       src={it.src}
                       alt={it.alt}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
                     />
                     <div className="absolute inset-0 bg-burgundy-deep/0 group-hover:bg-burgundy-deep/30 transition-colors duration-500" />
@@ -123,6 +156,20 @@ export function Gallery() {
               );
             })}
           </div>
+
+          {visibleCount < filtered.length && (
+            <div
+              ref={sentinelRef}
+              className="flex items-center justify-center py-10 text-[10px] tracking-[0.3em] uppercase text-charcoal/40"
+            >
+              Loading more memories…
+            </div>
+          )}
+          {visibleCount >= filtered.length && filtered.length > PAGE_SIZE && (
+            <div className="py-10 text-center text-[10px] tracking-[0.3em] uppercase text-charcoal/30">
+              End of archive · {filtered.length} frames
+            </div>
+          )}
         </div>
       </div>
 
