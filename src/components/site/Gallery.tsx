@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import gettingReady from "@/assets/getting-ready.jpg";
 import ceremony from "@/assets/ceremony.jpg";
 import reception from "@/assets/reception.jpg";
