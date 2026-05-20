@@ -40,7 +40,7 @@ export function Chapter({
           width={imageW}
           height={imageH}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover animate-ken-burns"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-burgundy-deep/65" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-ivory">
@@ -85,7 +85,7 @@ export function Chapter({
               width={imageW}
               height={imageH}
               loading="lazy"
-              className="h-auto w-full object-cover animate-ken-burns transition-transform duration-[1500ms] group-hover:scale-[1.1]"
+              className="h-auto w-full object-cover transition-transform duration-[1500ms] group-hover:scale-[1.05]"
             />
           </Reveal>
         </div>
