@@ -34,13 +34,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:title", content: "The Wedding of Nyota & Bilkack — 16 May 2026" },
       {
         name: "twitter:description",
-        content:
-          "A cinematic memorial of Nyota and Bilkack's wedding day at Vosh.",
+        content: "A cinematic memorial of Nyota and Bilkack's wedding day at Vosh.",
       },
     ],
-    links: [
-      { rel: "canonical", href: "https://nyota-bilkack-cinematic.lovable.app/" },
-    ],
+    links: [{ rel: "canonical", href: "https://nyota-bilkack-cinematic.lovable.app/" }],
     scripts: [
       {
         type: "application/ld+json",

@@ -18,11 +18,7 @@ export function Credits() {
 
         <div className="mt-20 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {credits.map((c, i) => (
-            <Reveal
-              key={`${c.role}-${i}`}
-              delay={i * 90}
-              className="border-t border-gold/30 pt-6"
-            >
+            <Reveal key={`${c.role}-${i}`} delay={i * 90} className="border-t border-gold/30 pt-6">
               <p className="label-gold">{c.role}</p>
               <p className="mt-3 font-serif text-ivory text-2xl">{c.name}</p>
             </Reveal>
