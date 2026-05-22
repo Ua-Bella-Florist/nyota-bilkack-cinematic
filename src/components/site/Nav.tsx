@@ -68,7 +68,10 @@ export function Nav() {
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
-      <div className="absolute bottom-0 left-0 h-px bg-gold/70 transition-[width] duration-150" style={{ width: `${progress}%` }} />
+      <div
+        className="absolute bottom-0 left-0 h-px bg-gold/70 transition-[width] duration-150"
+        style={{ width: `${progress}%` }}
+      />
 
       {open && (
         <div className="md:hidden fixed inset-0 top-[60px] bg-burgundy-deep/98 backdrop-blur-xl">

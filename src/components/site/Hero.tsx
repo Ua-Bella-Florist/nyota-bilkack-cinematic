@@ -31,7 +31,7 @@ export function Hero() {
     >
       <div ref={ref} className="absolute inset-0 will-change-transform">
         <img
-          src={heroImg}
+          src="https://ik.imagekit.io/nyotabilkack/wedding/WhatsApp%20Image%202026-05-18%20at%2010.30.38%20(1).jpeg?updatedAt=1779303175557"
           alt="Nyota and Bilkack — wedding portrait"
           width={1920}
           height={1280}

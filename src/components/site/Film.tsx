@@ -22,7 +22,10 @@ export function Film() {
           </p>
         </Reveal>
 
-        <Reveal delay={300} className="mt-16 relative aspect-video w-full overflow-hidden ring-1 ring-gold/30">
+        <Reveal
+          delay={300}
+          className="mt-16 relative aspect-video w-full overflow-hidden ring-1 ring-gold/30"
+        >
           {loaded ? (
             <iframe
               src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"

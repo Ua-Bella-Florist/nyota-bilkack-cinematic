@@ -67,7 +67,8 @@ export function Chapter({
     );
   }
 
-  const bg = variant === "beige" ? "bg-beige" : variant === "dark" ? "bg-burgundy-deep" : "bg-ivory";
+  const bg =
+    variant === "beige" ? "bg-beige" : variant === "dark" ? "bg-burgundy-deep" : "bg-ivory";
   const textColor = variant === "dark" ? "text-ivory" : "text-charcoal";
   const titleColor = variant === "dark" ? "text-ivory" : "text-burgundy";
   const bodyColor = variant === "dark" ? "text-ivory/80" : "text-charcoal/90";
@@ -99,7 +100,9 @@ export function Chapter({
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <h2 className={`mt-6 font-serif ${titleColor} text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.1]`}>
+            <h2
+              className={`mt-6 font-serif ${titleColor} text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.1]`}
+            >
               {title}
             </h2>
           </Reveal>
@@ -110,13 +113,7 @@ export function Chapter({
           </Reveal>
           {meta && (
             <Reveal delay={360}>
-              <p
-                className={`mt-8 label-gold ${
-                  variant === "dark" ? "" : ""
-                }`}
-              >
-                {meta}
-              </p>
+              <p className={`mt-8 label-gold ${variant === "dark" ? "" : ""}`}>{meta}</p>
             </Reveal>
           )}
         </div>
