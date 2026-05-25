@@ -1,35 +1,58 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import gettingReady from "@/assets/getting-ready.jpg";
-import ceremony from "@/assets/ceremony.jpg";
-import reception from "@/assets/reception.jpg";
-import party from "@/assets/party.jpg";
-import bridal from "@/assets/bridal-party.jpg";
-import families from "@/assets/families.jpg";
-import gifts from "@/assets/gifts.jpg";
-import story from "@/assets/story.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { FALLBACK_GALLERY_IMAGES, GalleryItem } from "@/lib/fallback-images";
 import { ChapterHeader } from "./ChapterHeader";
 import { Reveal } from "./Reveal";
 
 type Tag = "All" | "Getting Ready" | "Ceremony" | "Reception" | "Party" | "Families";
 type Layout = "Masonry" | "Grid" | "Strip";
 
-const baseItems: { src: string; tag: Exclude<Tag, "All">; alt: string; aspect: string }[] = [
-  { src: gettingReady, tag: "Getting Ready", alt: "Bride's dress", aspect: "aspect-[3/4]" },
-  { src: ceremony, tag: "Ceremony", alt: "Church ceremony", aspect: "aspect-[4/3]" },
-  { src: story, tag: "Ceremony", alt: "Hands joined", aspect: "aspect-[3/4]" },
-  { src: reception, tag: "Reception", alt: "Reception room", aspect: "aspect-[4/3]" },
-  { src: gifts, tag: "Reception", alt: "Wedding gifts", aspect: "aspect-square" },
-  { src: bridal, tag: "Reception", alt: "Bridal party", aspect: "aspect-[4/3]" },
-  { src: party, tag: "Party", alt: "Guests dancing at the reception", aspect: "aspect-[3/4]" },
-  { src: families, tag: "Families", alt: "Family portrait", aspect: "aspect-[4/3]" },
-];
-
-// Duplicate to simulate a denser archive so the internal scroll is meaningful
-const items = [...baseItems, ...baseItems, ...baseItems, ...baseItems, ...baseItems];
 const PAGE_SIZE = 12;
-
 const tags: Tag[] = ["All", "Getting Ready", "Ceremony", "Reception", "Party", "Families"];
 const layouts: Layout[] = ["Masonry", "Grid", "Strip"];
+
+interface ImageKitFile {
+  fileId: string;
+  name: string;
+  filePath: string;
+  url: string;
+  thumbnailUrl: string;
+  height: number;
+  width: number;
+  size: number;
+  tags?: string[];
+}
+
+function GallerySkeleton({ layout }: Readonly<{ layout: Layout }>) {
+  const skeletons = Array.from({ length: 8 });
+  let containerClass = "columns-2 md:columns-3 lg:columns-4 gap-4";
+  if (layout === "Grid") {
+    containerClass = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
+  } else if (layout === "Strip") {
+    containerClass = "flex gap-4 overflow-x-auto pb-4";
+  }
+
+  return (
+    <div className={containerClass}>
+      {skeletons.map((_, i) => {
+        let itemClass = "w-full bg-charcoal/5 rounded animate-pulse";
+        let skeletonSuffix: string = layout;
+        if (layout === "Masonry") {
+          const heights = ["h-[250px]", "h-[380px]", "h-[300px]", "h-[450px]"];
+          const h = heights[i % 4];
+          itemClass += ` mb-4 ${h}`;
+          skeletonSuffix = `${layout}-${h}`;
+        } else if (layout === "Grid") {
+          itemClass += " aspect-square";
+        } else {
+          itemClass += " shrink-0 h-[60vh] w-[40vh]";
+        }
+
+        return <div key={`skeleton-${skeletonSuffix}-${i}`} className={itemClass} />;
+      })}
+    </div>
+  );
+}
 
 export function Gallery() {
   const [active, setActive] = useState<Tag>("All");
@@ -39,9 +62,101 @@ export function Gallery() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  // Securely query files from our server endpoint
+  const { data, isLoading } = useQuery({
+    queryKey: ["images"],
+    queryFn: async () => {
+      const res = await fetch("/api/images");
+      if (!res.ok) throw new Error("Failed to fetch images");
+      return res.json() as Promise<{ files: ImageKitFile[]; error?: string }>;
+    },
+  });
+
+  // Dynamically map and categorize the images
+  const items = useMemo(() => {
+    if (!data?.files || data.files.length === 0) {
+      return FALLBACK_GALLERY_IMAGES;
+    }
+
+    const mapped = data.files
+      .map((file) => {
+        const pathLower = file.filePath.toLowerCase();
+        const tagsLower = new Set((file.tags ?? []).map((t) => t.toLowerCase()));
+
+        let tag: Tag | null = null;
+
+        // 1. Folders within 'nyota-bilkack' or fallback tags
+        if (
+          pathLower.includes("/getting ready") ||
+          pathLower.includes("/getting-ready") ||
+          pathLower.includes("/morning") ||
+          tagsLower.has("getting ready") ||
+          tagsLower.has("getting-ready") ||
+          tagsLower.has("gettingready")
+        ) {
+          tag = "Getting Ready";
+        } else if (
+          pathLower.includes("/ceremony") ||
+          tagsLower.has("ceremony")
+        ) {
+          tag = "Ceremony";
+        } else if (
+          pathLower.includes("/reception") ||
+          pathLower.includes("/gifts") ||
+          tagsLower.has("reception")
+        ) {
+          tag = "Reception";
+        } else if (
+          pathLower.includes("/party") ||
+          pathLower.includes("/dance") ||
+          tagsLower.has("party")
+        ) {
+          tag = "Party";
+        } else if (
+          pathLower.includes("/families") ||
+          pathLower.includes("/family") ||
+          tagsLower.has("families") ||
+          tagsLower.has("family")
+        ) {
+          tag = "Families";
+        }
+
+        if (!tag) return null;
+
+        // Calculate aspect ratios based on real image dimensions
+        let aspect = "aspect-[4/3]";
+        if (file.width && file.height) {
+          const ratio = file.width / file.height;
+          if (ratio < 0.8) {
+            aspect = "aspect-[3/4]";
+          } else if (ratio <= 1.2) {
+            aspect = "aspect-square";
+          }
+          // ratio > 1.2 keeps the default "aspect-[4/3]"
+        }
+
+        // Beautiful clean alt text from filename
+        const cleanName = file.name
+          .replace(/[-_]/g, " ")
+          .replace(/\.[^/.]+$/, "")
+          .replace(/^\d+\s*/, "");
+
+        return {
+          src: file.url,
+          thumbnail: file.thumbnailUrl,
+          tag,
+          alt: cleanName,
+          aspect,
+        };
+      })
+      .filter(Boolean) as GalleryItem[];
+
+    return mapped.length > 0 ? mapped : FALLBACK_GALLERY_IMAGES;
+  }, [data]);
+
   const filtered = useMemo(
     () => (active === "All" ? items : items.filter((i) => i.tag === active)),
-    [active],
+    [active, items],
   );
 
   const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
@@ -69,7 +184,7 @@ export function Gallery() {
     );
     io.observe(target);
     return () => io.disconnect();
-  }, [visibleCount, filtered.length, layout]);
+  }, [visibleCount, filtered.length]);
 
   let containerClass = "flex gap-4 snap-x snap-mandatory overflow-x-auto pb-4";
   if (layout === "Masonry") {
@@ -123,8 +238,12 @@ export function Gallery() {
           className="mt-10 max-h-[78vh] overflow-y-auto pr-2 gallery-scroll"
           style={{ scrollbarGutter: "stable" }}
         >
-          <div className={containerClass}>
-            {visible.map((it, i) => {
+          {isLoading ? (
+            <GallerySkeleton layout={layout} />
+          ) : (
+            <div className={containerClass}>
+              {visible.map((it, i) => {
+
               let itemClass = "";
               if (layout === "Masonry") {
                 itemClass = `mb-4 break-inside-avoid ${it.aspect}`;
@@ -149,7 +268,7 @@ export function Gallery() {
                     className="group relative block h-full w-full overflow-hidden"
                   >
                     <img
-                      src={it.src}
+                      src={it.thumbnail ?? it.src}
                       alt={it.alt}
                       loading="lazy"
                       decoding="async"
@@ -160,7 +279,8 @@ export function Gallery() {
                 </Reveal>
               );
             })}
-          </div>
+            </div>
+          )}
 
           {visibleCount < filtered.length && (
             <div
