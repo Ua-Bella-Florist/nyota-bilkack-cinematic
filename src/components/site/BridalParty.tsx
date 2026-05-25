@@ -1,4 +1,3 @@
-import bridalImg from "@/assets/bridal-party.jpg";
 import { ChapterHeader } from "./ChapterHeader";
 import { GoldDivider } from "./GoldDivider";
 import { Reveal } from "./Reveal";
