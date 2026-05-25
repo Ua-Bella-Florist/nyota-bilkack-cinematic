@@ -95,10 +95,7 @@ export function Gallery() {
           tagsLower.has("gettingready")
         ) {
           tag = "Getting Ready";
-        } else if (
-          pathLower.includes("/ceremony") ||
-          tagsLower.has("ceremony")
-        ) {
+        } else if (pathLower.includes("/ceremony") || tagsLower.has("ceremony")) {
           tag = "Ceremony";
         } else if (
           pathLower.includes("/reception") ||
@@ -243,42 +240,41 @@ export function Gallery() {
           ) : (
             <div className={containerClass}>
               {visible.map((it, i) => {
+                let itemClass = "";
+                if (layout === "Masonry") {
+                  itemClass = `mb-4 break-inside-avoid ${it.aspect}`;
+                } else if (layout === "Grid") {
+                  itemClass = "aspect-square";
+                } else {
+                  let widthClass = "w-[80vh]";
+                  if (it.aspect.includes("3/4")) widthClass = "w-[40vh]";
+                  else if (it.aspect.includes("square")) widthClass = "w-[60vh]";
+                  itemClass = `snap-start shrink-0 h-[60vh] ${widthClass}`;
+                }
 
-              let itemClass = "";
-              if (layout === "Masonry") {
-                itemClass = `mb-4 break-inside-avoid ${it.aspect}`;
-              } else if (layout === "Grid") {
-                itemClass = "aspect-square";
-              } else {
-                let widthClass = "w-[80vh]";
-                if (it.aspect.includes("3/4")) widthClass = "w-[40vh]";
-                else if (it.aspect.includes("square")) widthClass = "w-[60vh]";
-                itemClass = `snap-start shrink-0 h-[60vh] ${widthClass}`;
-              }
-
-              return (
-                <Reveal
-                  key={`${active}-${layout}-${i}`}
-                  delay={Math.min((i % PAGE_SIZE) * 30, 400)}
-                  className={itemClass}
-                >
-                  <button
-                    onClick={() => setLightbox(it.src)}
-                    aria-label={`Open photo: ${it.alt}`}
-                    className="group relative block h-full w-full overflow-hidden"
+                return (
+                  <Reveal
+                    key={`${active}-${layout}-${i}`}
+                    delay={Math.min((i % PAGE_SIZE) * 30, 400)}
+                    className={itemClass}
                   >
-                    <img
-                      src={it.thumbnail ?? it.src}
-                      alt={it.alt}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
-                    />
-                    <div className="absolute inset-0 bg-burgundy-deep/0 group-hover:bg-burgundy-deep/30 transition-colors duration-500" />
-                  </button>
-                </Reveal>
-              );
-            })}
+                    <button
+                      onClick={() => setLightbox(it.src)}
+                      aria-label={`Open photo: ${it.alt}`}
+                      className="group relative block h-full w-full overflow-hidden"
+                    >
+                      <img
+                        src={it.thumbnail ?? it.src}
+                        alt={it.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
+                      />
+                      <div className="absolute inset-0 bg-burgundy-deep/0 group-hover:bg-burgundy-deep/30 transition-colors duration-500" />
+                    </button>
+                  </Reveal>
+                );
+              })}
             </div>
           )}
 

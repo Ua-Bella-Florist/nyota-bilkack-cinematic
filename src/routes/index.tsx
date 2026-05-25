@@ -12,7 +12,6 @@ import { Film } from "@/components/site/Film";
 import { Credits } from "@/components/site/Credits";
 import { Footer } from "@/components/site/Footer";
 
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -77,25 +76,17 @@ function Index() {
         const tagsLower = (f.tags ?? []).map((t: string) => t.toLowerCase());
 
         const matchesKeyword = keywords.some(
-          (k) =>
-            pathLower.includes(k) ||
-            nameLower.includes(k) ||
-            tagsLower.includes(k)
+          (k) => pathLower.includes(k) || nameLower.includes(k) || tagsLower.includes(k),
         );
 
         const matchesExclude = excludeKeywords.some(
-          (k) =>
-            pathLower.includes(k) ||
-            nameLower.includes(k) ||
-            tagsLower.includes(k)
+          (k) => pathLower.includes(k) || nameLower.includes(k) || tagsLower.includes(k),
         );
 
         return matchesKeyword && !matchesExclude;
       });
 
-      return found
-        ? { url: found.url, w: found.width ?? 1920, h: found.height ?? 1280 }
-        : null;
+      return found ? { url: found.url, w: found.width ?? 1920, h: found.height ?? 1280 } : null;
     };
 
     return {
