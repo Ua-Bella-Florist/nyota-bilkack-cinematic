@@ -8,14 +8,7 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig(
   {
-    ignores: [
-      "dist",
-      ".output",
-      ".vinxi",
-      ".tanstack",
-      ".qodo",
-      "src/routeTree.gen.ts",
-    ],
+    ignores: ["dist", ".output", ".vinxi", ".tanstack", ".qodo", "src/routeTree.gen.ts"],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 
 import appCss from "../styles.css?url";
 import { ImageKitProvider } from "@imagekit/react";
@@ -128,6 +129,7 @@ function RootShell({ children }: Readonly<{ children: React.ReactNode }>) {
       <body>
         {children}
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );
@@ -138,7 +140,9 @@ function RootComponent() {
   const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
 
   if (!urlEndpoint) {
-    console.warn("VITE_IMAGEKIT_URL_ENDPOINT environment variable is missing. Falling back to the default production endpoint.");
+    console.warn(
+      "VITE_IMAGEKIT_URL_ENDPOINT environment variable is missing. Falling back to the default production endpoint.",
+    );
   }
 
   const activeUrlEndpoint = urlEndpoint || "https://ik.imagekit.io/nyotabilkack/";

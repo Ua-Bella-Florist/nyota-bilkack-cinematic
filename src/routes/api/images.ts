@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/images")({
       GET: async () => {
         // Retrieve keys from environment variables securely on the server
         const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
-        
+
         if (!privateKey) {
           console.warn("IMAGEKIT_PRIVATE_KEY is not defined in the environment variables.");
           return new Response(
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/api/images")({
             {
               status: 200, // Return 200 so the client can fallback gracefully without crashing
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
         }
 
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/images")({
           // Construct Basic Auth header securely
           const authString = `${privateKey}:`;
           const base64Auth = btoa(authString);
-          
+
           // Fetch up to 1000 image files from the ImageKit API
           const response = await fetch(
             "https://api.imagekit.io/v1/files?fileType=image&limit=1000",
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/api/images")({
                 Authorization: `Basic ${base64Auth}`,
                 Accept: "application/json",
               },
-            }
+            },
           );
 
           if (!response.ok) {
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/api/images")({
           }
 
           const data = await response.json();
-          
+
           return new Response(JSON.stringify({ files: data }), {
             status: 200,
             headers: {
@@ -75,7 +75,7 @@ export const Route = createFileRoute("/api/images")({
             {
               status: 200, // Return 200 with error details to allow client fallback
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
         }
       },

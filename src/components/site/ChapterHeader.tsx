@@ -7,12 +7,7 @@ interface ChapterHeaderProps {
   align?: "left" | "center";
 }
 
-export function ChapterHeader({
-  eyebrow,
-  title,
-  light,
-  align = "center",
-}: ChapterHeaderProps) {
+export function ChapterHeader({ eyebrow, title, light, align = "center" }: ChapterHeaderProps) {
   const alignCls = align === "center" ? "text-center mx-auto" : "text-left";
   return (
     <div className={`max-w-3xl ${alignCls}`}>
@@ -21,8 +16,9 @@ export function ChapterHeader({
       </Reveal>
       <Reveal delay={120}>
         <h2
-          className={`mt-5 font-serif font-normal tracking-tight ${light ? "text-ivory" : "text-burgundy"
-            } text-[clamp(2rem,5vw,4rem)] leading-[1.1]`}
+          className={`mt-5 font-serif font-normal tracking-tight ${
+            light ? "text-ivory" : "text-burgundy"
+          } text-[clamp(2rem,5vw,4rem)] leading-[1.1]`}
         >
           {title}
         </h2>
