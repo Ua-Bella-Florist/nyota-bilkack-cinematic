@@ -1,5 +1,6 @@
 export interface GalleryItem {
   src: string;
+  thumbnail?: string;
   tag: "Getting Ready" | "Ceremony" | "Reception" | "Party" | "Families";
   alt: string;
   aspect: string;

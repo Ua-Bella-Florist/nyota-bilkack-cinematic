@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FALLBACK_GALLERY_IMAGES } from "@/lib/fallback-images";
+import { FALLBACK_GALLERY_IMAGES, GalleryItem } from "@/lib/fallback-images";
 import { ChapterHeader } from "./ChapterHeader";
 import { Reveal } from "./Reveal";
 
@@ -36,16 +36,19 @@ function GallerySkeleton({ layout }: Readonly<{ layout: Layout }>) {
     <div className={containerClass}>
       {skeletons.map((_, i) => {
         let itemClass = "w-full bg-charcoal/5 rounded animate-pulse";
+        let skeletonSuffix: string = layout;
         if (layout === "Masonry") {
           const heights = ["h-[250px]", "h-[380px]", "h-[300px]", "h-[450px]"];
-          itemClass += ` mb-4 ${heights[i % 4]}`;
+          const h = heights[i % 4];
+          itemClass += ` mb-4 ${h}`;
+          skeletonSuffix = `${layout}-${h}`;
         } else if (layout === "Grid") {
           itemClass += " aspect-square";
         } else {
           itemClass += " shrink-0 h-[60vh] w-[40vh]";
         }
 
-        return <div key={i} className={itemClass} />;
+        return <div key={`skeleton-${skeletonSuffix}-${i}`} className={itemClass} />;
       })}
     </div>
   );
@@ -78,7 +81,7 @@ export function Gallery() {
     const mapped = data.files
       .map((file) => {
         const pathLower = file.filePath.toLowerCase();
-        const tagsLower = (file.tags ?? []).map((t) => t.toLowerCase());
+        const tagsLower = new Set((file.tags ?? []).map((t) => t.toLowerCase()));
 
         let tag: Tag | null = null;
 
@@ -87,33 +90,33 @@ export function Gallery() {
           pathLower.includes("/getting ready") ||
           pathLower.includes("/getting-ready") ||
           pathLower.includes("/morning") ||
-          tagsLower.includes("getting ready") ||
-          tagsLower.includes("getting-ready") ||
-          tagsLower.includes("gettingready")
+          tagsLower.has("getting ready") ||
+          tagsLower.has("getting-ready") ||
+          tagsLower.has("gettingready")
         ) {
           tag = "Getting Ready";
         } else if (
           pathLower.includes("/ceremony") ||
-          tagsLower.includes("ceremony")
+          tagsLower.has("ceremony")
         ) {
           tag = "Ceremony";
         } else if (
           pathLower.includes("/reception") ||
           pathLower.includes("/gifts") ||
-          tagsLower.includes("reception")
+          tagsLower.has("reception")
         ) {
           tag = "Reception";
         } else if (
           pathLower.includes("/party") ||
           pathLower.includes("/dance") ||
-          tagsLower.includes("party")
+          tagsLower.has("party")
         ) {
           tag = "Party";
         } else if (
           pathLower.includes("/families") ||
           pathLower.includes("/family") ||
-          tagsLower.includes("families") ||
-          tagsLower.includes("family")
+          tagsLower.has("families") ||
+          tagsLower.has("family")
         ) {
           tag = "Families";
         }
@@ -124,13 +127,12 @@ export function Gallery() {
         let aspect = "aspect-[4/3]";
         if (file.width && file.height) {
           const ratio = file.width / file.height;
-          if (ratio > 1.2) {
-            aspect = "aspect-[4/3]";
-          } else if (ratio < 0.8) {
+          if (ratio < 0.8) {
             aspect = "aspect-[3/4]";
-          } else {
+          } else if (ratio <= 1.2) {
             aspect = "aspect-square";
           }
+          // ratio > 1.2 keeps the default "aspect-[4/3]"
         }
 
         // Beautiful clean alt text from filename
@@ -141,12 +143,13 @@ export function Gallery() {
 
         return {
           src: file.url,
-          tag: tag as Exclude<Tag, "All">,
+          thumbnail: file.thumbnailUrl,
+          tag,
           alt: cleanName,
           aspect,
         };
       })
-      .filter(Boolean) as { src: string; tag: Exclude<Tag, "All">; alt: string; aspect: string }[];
+      .filter(Boolean) as GalleryItem[];
 
     return mapped.length > 0 ? mapped : FALLBACK_GALLERY_IMAGES;
   }, [data]);
@@ -265,7 +268,7 @@ export function Gallery() {
                     className="group relative block h-full w-full overflow-hidden"
                   >
                     <img
-                      src={it.src}
+                      src={it.thumbnail ?? it.src}
                       alt={it.alt}
                       loading="lazy"
                       decoding="async"
