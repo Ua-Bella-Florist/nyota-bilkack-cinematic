@@ -138,12 +138,14 @@ function RootComponent() {
   const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
 
   if (!urlEndpoint) {
-    throw new Error("VITE_IMAGEKIT_URL_ENDPOINT environment variable is missing. This is required for ImageKit images to load.");
+    console.warn("VITE_IMAGEKIT_URL_ENDPOINT environment variable is missing. Falling back to the default production endpoint.");
   }
+
+  const activeUrlEndpoint = urlEndpoint || "https://ik.imagekit.io/nyotabilkack/";
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ImageKitProvider urlEndpoint={urlEndpoint}>
+      <ImageKitProvider urlEndpoint={activeUrlEndpoint}>
         <Outlet />
       </ImageKitProvider>
     </QueryClientProvider>
