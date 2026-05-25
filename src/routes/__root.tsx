@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { ImageKitProvider } from "@imagekit/react";
 
 function NotFoundComponent() {
   return (
@@ -134,10 +135,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const urlEndpoint =
+    import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT || "https://ik.imagekit.io/your_imagekit_id";
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <ImageKitProvider urlEndpoint={urlEndpoint}>
+        <Outlet />
+      </ImageKitProvider>
     </QueryClientProvider>
   );
 }

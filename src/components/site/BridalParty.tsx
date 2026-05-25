@@ -20,10 +20,8 @@ export function BridalParty() {
 
         <Reveal className="mt-16 relative aspect-[16/10] overflow-hidden">
           <img
-            src={bridalImg}
+            src="https://ik.imagekit.io/nyotabilkack/wedding/WhatsApp%20Image%202026-05-18%20at%2010.30.48.jpeg?updatedAt=1779303243019"
             alt="The bridal party"
-            width={1600}
-            height={1000}
             loading="lazy"
             className="h-full w-full object-cover"
           />

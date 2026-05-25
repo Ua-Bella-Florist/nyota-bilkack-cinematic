@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import heroImg from "@/assets/hero.jpg";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
