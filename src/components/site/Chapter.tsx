@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { Reveal } from "./Reveal";
 
 interface ChapterProps {
@@ -14,7 +13,6 @@ interface ChapterProps {
   imageH: number;
   variant?: "ivory" | "beige" | "dark" | "fullbleed";
   reverse?: boolean;
-  children?: ReactNode;
 }
 
 export function Chapter({
@@ -30,7 +28,7 @@ export function Chapter({
   imageH,
   variant = "ivory",
   reverse = false,
-}: ChapterProps) {
+}: Readonly<ChapterProps>) {
   if (variant === "fullbleed") {
     return (
       <section id={id} className="relative h-[100svh] w-full overflow-hidden bg-burgundy-deep">
@@ -67,8 +65,9 @@ export function Chapter({
     );
   }
 
-  const bg =
-    variant === "beige" ? "bg-beige" : variant === "dark" ? "bg-burgundy-deep" : "bg-ivory";
+  let bg = "bg-ivory";
+  if (variant === "beige") bg = "bg-beige";
+  else if (variant === "dark") bg = "bg-burgundy-deep";
   const textColor = variant === "dark" ? "text-ivory" : "text-charcoal";
   const titleColor = variant === "dark" ? "text-ivory" : "text-burgundy";
   const bodyColor = variant === "dark" ? "text-ivory/80" : "text-charcoal/90";
@@ -113,7 +112,7 @@ export function Chapter({
           </Reveal>
           {meta && (
             <Reveal delay={360}>
-              <p className={`mt-8 label-gold ${variant === "dark" ? "" : ""}`}>{meta}</p>
+              <p className="mt-8 label-gold">{meta}</p>
             </Reveal>
           )}
         </div>

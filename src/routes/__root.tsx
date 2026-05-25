@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { ImageKitProvider } from "@imagekit/react";
 
 function NotFoundComponent() {
   return (
@@ -32,7 +33,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: Readonly<{ error: Error; reset: () => void }>) {
   console.error(error);
   const router = useRouter();
 
@@ -118,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-function RootShell({ children }: { children: React.ReactNode }) {
+function RootShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
@@ -134,10 +135,17 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+
+  if (!urlEndpoint) {
+    throw new Error("VITE_IMAGEKIT_URL_ENDPOINT environment variable is missing. This is required for ImageKit images to load.");
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <ImageKitProvider urlEndpoint={urlEndpoint}>
+        <Outlet />
+      </ImageKitProvider>
     </QueryClientProvider>
   );
 }

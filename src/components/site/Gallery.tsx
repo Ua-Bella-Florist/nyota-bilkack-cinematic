@@ -71,12 +71,12 @@ export function Gallery() {
     return () => io.disconnect();
   }, [visibleCount, filtered.length, layout]);
 
-  const containerClass =
-    layout === "Masonry"
-      ? "columns-2 md:columns-3 lg:columns-4 gap-4"
-      : layout === "Grid"
-        ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        : "flex gap-4 snap-x snap-mandatory overflow-x-auto pb-4";
+  let containerClass = "flex gap-4 snap-x snap-mandatory overflow-x-auto pb-4";
+  if (layout === "Masonry") {
+    containerClass = "columns-2 md:columns-3 lg:columns-4 gap-4";
+  } else if (layout === "Grid") {
+    containerClass = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
+  }
 
   return (
     <section id="gallery" className="relative bg-ivory py-28 md:py-36">
@@ -125,12 +125,17 @@ export function Gallery() {
         >
           <div className={containerClass}>
             {visible.map((it, i) => {
-              const itemClass =
-                layout === "Masonry"
-                  ? `mb-4 break-inside-avoid ${it.aspect}`
-                  : layout === "Grid"
-                    ? "aspect-square"
-                    : `snap-start shrink-0 h-[60vh] ${it.aspect.includes("3/4") ? "w-[40vh]" : it.aspect.includes("square") ? "w-[60vh]" : "w-[80vh]"}`;
+              let itemClass = "";
+              if (layout === "Masonry") {
+                itemClass = `mb-4 break-inside-avoid ${it.aspect}`;
+              } else if (layout === "Grid") {
+                itemClass = "aspect-square";
+              } else {
+                let widthClass = "w-[80vh]";
+                if (it.aspect.includes("3/4")) widthClass = "w-[40vh]";
+                else if (it.aspect.includes("square")) widthClass = "w-[60vh]";
+                itemClass = `snap-start shrink-0 h-[60vh] ${widthClass}`;
+              }
 
               return (
                 <Reveal
@@ -174,18 +179,21 @@ export function Gallery() {
       </div>
 
       {lightbox && (
-        <div
-          className="fixed inset-0 z-[400] flex items-center justify-center bg-burgundy-deep/95 backdrop-blur-md p-6"
-          onClick={() => setLightbox(null)}
-        >
+        <div className="fixed inset-0 z-[400] flex items-center justify-center p-6">
+          <button
+            type="button"
+            className="absolute inset-0 h-full w-full cursor-default bg-burgundy-deep/95 backdrop-blur-md"
+            onClick={() => setLightbox(null)}
+            aria-label="Close lightbox backdrop"
+          />
           <img
             src={lightbox}
             alt=""
-            className="max-h-[90vh] max-w-[95vw] object-contain shadow-dark"
+            className="relative z-10 max-h-[90vh] max-w-[95vw] object-contain shadow-dark"
           />
           <button
             aria-label="Close photo viewer"
-            className="absolute top-6 right-6 text-ivory/70 hover:text-gold text-[11px] tracking-[0.3em] uppercase"
+            className="absolute top-6 right-6 z-20 text-ivory/70 hover:text-gold text-[11px] tracking-[0.3em] uppercase"
             onClick={() => setLightbox(null)}
           >
             Close

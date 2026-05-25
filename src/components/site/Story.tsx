@@ -1,4 +1,3 @@
-import storyImg from "@/assets/story.jpg";
 import { Reveal } from "./Reveal";
 import { GoldDivider } from "./GoldDivider";
 
@@ -9,7 +8,7 @@ export function Story() {
         <div className="md:col-span-5">
           <Reveal className="relative aspect-[4/5] overflow-hidden">
             <img
-              src={storyImg}
+              src="https://ik.imagekit.io/nyotabilkack/wedding/WhatsApp%20Image%202026-05-18%20at%2010.30.41%20(1).jpeg?updatedAt=1779303039706"
               alt="Nyota and Bilkack — quiet portrait"
               width={1280}
               height={1600}
