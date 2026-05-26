@@ -35,12 +35,12 @@ export function Story() {
 
           <div className="mt-10 max-w-[560px] space-y-6 font-serif text-[17px] leading-[1.85] text-charcoal/90">
             <Reveal as="p">
-              Some love stories start with a glance. Ours started with something quieter — a moment
+              Some love stories start with a glance. Ours started with something quieter, a moment
               neither of us planned, in a place we both happened to be. What followed was not a
               rush, but a knowing.
             </Reveal>
             <Reveal as="p" delay={120}>
-              Through seasons of life — its ordinary days and extraordinary ones — they chose each
+              Through seasons of life, its ordinary days and extraordinary ones, we chose each
               other, again and again. A friendship that grew into something neither could contain.
             </Reveal>
             <Reveal as="p" delay={240}>

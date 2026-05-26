@@ -10,6 +10,9 @@ export function Footer() {
         <p className="mt-12 text-[11px] tracking-[0.3em] uppercase text-ivory/40">
           A keepsake — with gratitude
         </p>
+        <p className="mt-4 text-[11px] tracking-[0.2em] uppercase text-ivory/30">
+          Site developed by <a href="https://jumalaw98.netlify.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-ivory transition-colors">Lawrence</a>
+        </p>
       </div>
     </footer>
   );
