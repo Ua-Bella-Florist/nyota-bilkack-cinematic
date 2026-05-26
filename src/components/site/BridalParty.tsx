@@ -3,12 +3,18 @@ import { GoldDivider } from "./GoldDivider";
 import { Reveal } from "./Reveal";
 
 const members = [
-  { name: "Amani", role: "Maid of Honour" },
-  { name: "Daudi", role: "Best Man" },
-  { name: "Zuri", role: "Bridesmaid" },
-  { name: "Kibwe", role: "Groomsman" },
-  { name: "Imani", role: "Bridesmaid" },
-  { name: "Jabari", role: "Groomsman" },
+  { name: "Sharon", role: "Maid of Honour" },
+  { name: "Jack", role: "Best Man" },
+  { name: "Levin", role: "Bridesmaid" },
+  { name: "Dornah", role: "Bridesmaid" },
+  { name: "Imeldah", role: "Bridesmaid" },
+  { name: "Faith", role: "Bridesmaid" },
+  { name: "Enock", role: "Groomsman" },
+  { name: "Sam", role: "Groomsman" },
+  { name: "Kelly", role: "Groomsman" },
+  { name: "Vincent", role: "Groomsman" },
+  { name: "Kevin", role: "Groomsman" },
+  { name: "Victor", role: "Groomsman" },
 ];
 
 export function BridalParty() {

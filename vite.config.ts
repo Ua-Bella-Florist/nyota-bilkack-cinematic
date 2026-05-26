@@ -23,6 +23,9 @@ export default defineConfig({
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
   ],
+  ssr: {
+    noExternal: ["@vercel/analytics"],
+  },
   resolve: {
     alias: {
       "@": `${process.cwd()}/src`,
