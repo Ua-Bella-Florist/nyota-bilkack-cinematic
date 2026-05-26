@@ -23,6 +23,42 @@ interface ImageKitFile {
   tags?: string[];
 }
 
+/**
+ * Appends ImageKit URL-transform parameters to a file URL.
+ * This uses ImageKit's CDN transform pipeline — no extra API calls,
+ * no rate-limit impact. The CDN resizes once and caches the result.
+ *
+ * Format: https://ik.imagekit.io/<id>/tr:w-{w},q-80,f-auto/<path>
+ */
+function buildThumbUrl(url: string, width: number): string {
+  // Guard: only transform urls from ImageKit CDN
+  // Using optional chain keeps the intent clear without a redundant falsy check.
+  if (!url?.includes("ik.imagekit.io")) return url;
+  // Insert transform segment after the ImageKit base path
+  return url.replace(
+    /(https:\/\/ik\.imagekit\.io\/[^/]+\/)/,
+    `$1tr:w-${width},q-80,f-auto/`,
+  );
+}
+
+/**
+ * Derive the Tailwind class string for a single gallery item.
+ * Extracted so the render callback stays below the cognitive-complexity limit.
+ */
+function getItemClass(layout: Layout, item: GalleryItem): string {
+  if (layout === "Masonry") {
+    return `mb-4 break-inside-avoid ${item.aspect}`;
+  }
+  if (layout === "Grid") {
+    return "aspect-square";
+  }
+  // Strip layout — width varies by aspect ratio
+  let widthClass = "w-[80vh]";
+  if (item.aspect.includes("3/4")) widthClass = "w-[40vh]";
+  else if (item.aspect.includes("square")) widthClass = "w-[60vh]";
+  return `snap-start shrink-0 h-[60vh] ${widthClass}`;
+}
+
 function GallerySkeleton({ layout }: Readonly<{ layout: Layout }>) {
   const skeletons = Array.from({ length: 8 });
   let containerClass = "columns-2 md:columns-3 lg:columns-4 gap-4";
@@ -62,7 +98,12 @@ export function Gallery() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Securely query files from our server endpoint
+  // Securely query files from our server endpoint.
+  // staleTime: 1 hr — within a browser session the cached data is served
+  // instantly without hitting the network again.
+  // gcTime: 2 hrs — keeps data in memory even after the component unmounts.
+  // refetchOnWindowFocus: false — prevents a background re-fetch every time
+  // the user alt-tabs back to the page.
   const { data, isLoading } = useQuery({
     queryKey: ["images"],
     queryFn: async () => {
@@ -70,6 +111,9 @@ export function Gallery() {
       if (!res.ok) throw new Error("Failed to fetch images");
       return res.json() as Promise<{ files: ImageKitFile[]; error?: string }>;
     },
+    staleTime: 1000 * 60 * 60,       // 1 hour — treat cached data as fresh
+    gcTime: 1000 * 60 * 120,         // 2 hours — keep in memory after unmount
+    refetchOnWindowFocus: false,     // don't re-fetch on alt-tab / focus
   });
 
   // Dynamically map and categorize the images
@@ -144,6 +188,9 @@ export function Gallery() {
           tag,
           alt: cleanName,
           aspect,
+          // Pass native dimensions so <img> can reserve the correct space (prevents CLS)
+          width: file.width || undefined,
+          height: file.height || undefined,
         };
       })
       .filter(Boolean) as GalleryItem[];
@@ -200,11 +247,10 @@ export function Gallery() {
             <button
               key={t}
               onClick={() => setActive(t)}
-              className={`rounded-full px-5 py-2 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${
-                active === t
+              className={`rounded-full px-5 py-2 text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${active === t
                   ? "bg-burgundy text-ivory"
                   : "bg-transparent text-charcoal/60 hover:text-burgundy hover:bg-beige"
-              }`}
+                }`}
             >
               {t}
             </button>
@@ -219,11 +265,10 @@ export function Gallery() {
             <button
               key={l}
               onClick={() => setLayout(l)}
-              className={`rounded-full border px-4 py-1.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${
-                layout === l
+              className={`rounded-full border px-4 py-1.5 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 ${layout === l
                   ? "border-gold text-burgundy bg-beige"
                   : "border-charcoal/15 text-charcoal/50 hover:text-burgundy hover:border-gold/60"
-              }`}
+                }`}
             >
               {l}
             </button>
@@ -240,17 +285,22 @@ export function Gallery() {
           ) : (
             <div className={containerClass}>
               {visible.map((it, i) => {
-                let itemClass = "";
-                if (layout === "Masonry") {
-                  itemClass = `mb-4 break-inside-avoid ${it.aspect}`;
-                } else if (layout === "Grid") {
-                  itemClass = "aspect-square";
-                } else {
-                  let widthClass = "w-[80vh]";
-                  if (it.aspect.includes("3/4")) widthClass = "w-[40vh]";
-                  else if (it.aspect.includes("square")) widthClass = "w-[60vh]";
-                  itemClass = `snap-start shrink-0 h-[60vh] ${widthClass}`;
-                }
+                // Pre-compute values outside JSX to avoid nested ternaries
+                // and keep the render callback simple (cognitive complexity).
+                const itemClass = getItemClass(layout, it);
+
+                // Width of the ImageKit thumbnail to request per layout.
+                // Kept as separate if/else statements (not a nested ternary) for readability.
+                let thumbWidth = 600; // Masonry default
+                if (layout === "Strip") thumbWidth = 800;
+                else if (layout === "Grid") thumbWidth = 400;
+
+                // Responsive sizes hint — Strip needs a wider budget; Masonry and Grid
+                // share the same column proportions so they use the same value.
+                const sizesAttr =
+                  layout === "Strip"
+                    ? "80vw"
+                    : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
                 return (
                   <Reveal
@@ -264,10 +314,20 @@ export function Gallery() {
                       className="group relative block h-full w-full overflow-hidden"
                     >
                       <img
-                        src={it.thumbnail ?? it.src}
+                        // Thumbnail: properly-sized ImageKit CDN transform
+                        src={buildThumbUrl(it.src, thumbWidth)}
+                        srcSet={[
+                          `${buildThumbUrl(it.src, layout === "Strip" ? 800 : 400)} 1x`,
+                          `${buildThumbUrl(it.src, layout === "Strip" ? 1200 : 800)} 2x`,
+                        ].join(", ")}
+                        sizes={sizesAttr}
                         alt={it.alt}
-                        loading="lazy"
+                        // First 4 images are above the fold — load eagerly at high priority.
+                        loading={i < 4 ? "eager" : "lazy"}
+                        fetchPriority={i < 4 ? "high" : "low"}
                         decoding="async"
+                        width={it.width}
+                        height={it.height}
                         className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.04]"
                       />
                       <div className="absolute inset-0 bg-burgundy-deep/0 group-hover:bg-burgundy-deep/30 transition-colors duration-500" />
