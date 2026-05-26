@@ -44,7 +44,7 @@ export function Story() {
               other, again and again. A friendship that grew into something neither could contain.
             </Reveal>
             <Reveal as="p" delay={240}>
-              On the 16th of May 2026, before family, friends, church, and God, they made it
+              On the 16th of May 2026, before family, friends, church, and God, we made it
               official. This is that day.
             </Reveal>
           </div>
