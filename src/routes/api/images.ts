@@ -62,7 +62,12 @@ export const Route = createFileRoute("/api/images")({
             status: 200,
             headers: {
               "Content-Type": "application/json",
-              "Cache-Control": "public, max-age=60, s-maxage=60", // Cache response briefly
+              // CDN (Vercel Edge) caches for 1 hr; browser caches for 1 hr.
+              // stale-while-revalidate lets the CDN serve stale data for up to 24 hrs
+              // while it fetches a fresh copy in the background — zero waiting for visitors.
+              "Cache-Control":
+                "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
+              "Vary": "Accept-Encoding",
             },
           });
         } catch (error: any) {

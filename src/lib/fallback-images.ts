@@ -4,6 +4,10 @@ export interface GalleryItem {
   tag: "Getting Ready" | "Ceremony" | "Reception" | "Party" | "Families";
   alt: string;
   aspect: string;
+  /** Native pixel width of the image — used for CLS-prevention on <img> */
+  width?: number;
+  /** Native pixel height of the image — used for CLS-prevention on <img> */
+  height?: number;
 }
 
 // =========================================================================
