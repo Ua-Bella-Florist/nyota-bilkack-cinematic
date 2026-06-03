@@ -40,7 +40,7 @@ dist-ssr
 
 .agents/
 .cursor/
-.github/
+.github/copilot-instructions.md
 .jetro/
 .mcp.json
 .windsurfrules
