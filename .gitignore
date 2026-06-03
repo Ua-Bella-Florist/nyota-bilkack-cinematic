@@ -37,3 +37,12 @@ dist-ssr
 # Keep .vercel/project.json (links repo to Vercel project)
 !.vercel/project.json
 !.vercel/README.txt
+
+.agents/
+.cursor/
+.github/copilot-instructions.md
+.jetro/
+.mcp.json
+.windsurfrules
+AGENT.md
+CLAUDE.md

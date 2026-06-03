@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Play } from "lucide-react";
 import { Reveal } from "./Reveal";
 
+const VIDEO_ID = "w-S96-jwM-g";
+
 export function Film() {
   const [loaded, setLoaded] = useState(false);
 
@@ -28,7 +30,7 @@ export function Film() {
         >
           {loaded ? (
             <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
+              src={`https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&rel=0`}
               title="Wedding Film"
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
@@ -43,7 +45,7 @@ export function Film() {
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-60"
                 style={{
-                  backgroundImage: `url(https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)`,
+                  backgroundImage: `url(https://img.youtube.com/vi/${VIDEO_ID}/maxresdefault.jpg)`,
                 }}
               />
               <div className="absolute inset-0 bg-burgundy-deep/50" />
